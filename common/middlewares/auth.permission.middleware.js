@@ -5,10 +5,9 @@ const ADMIN_PERMISSION = 4096;
 
 exports.minimumPermissionLevelRequired = (required_permission_level) => {
     return (req, res, next) => {
-        console.log(req.jwt)
         let user_permission_level = parseInt(req.jwt.permissionLevel);
         let userId = req.jwt.userId;
-        if (user_permission_level > required_permission_level) {
+        if (user_permission_level >= required_permission_level) {
             return next();
         } else {
             console.log('no permission level')

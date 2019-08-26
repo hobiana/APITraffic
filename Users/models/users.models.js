@@ -8,7 +8,8 @@ const userSchema = new Schema({
     lastName: String,
     email: String,
     password: String,
-    permissionLevel: Number
+    permissionLevel: Number,
+    tracks: [Schema.Types.ObjectId]
 });
 
 
@@ -21,7 +22,15 @@ userSchema.set('toJSON', {
     virtuals: true
 });
 
-const User = mongoose.model('Users', userSchema);
+function getModels(schemaName, userSchema) {
+    try {
+        return mongoose.model(schemaName, userSchema);
+    } catch (e) {
+        return mongoose.model(schemaName);
+    }
+}
+
+const User = getModels('Users', userSchema);
 
 exports.createUser = (userData) => {
     const user = new User(userData);
@@ -35,6 +44,17 @@ exports.findByEmail = (email) => {
 
 exports.findById = (id) => {
     return User.findById(id).then((result) => {
+        result = result.toJSON();
+        delete result._id;
+        delete result.__v;
+        return result;
+    });
+};
+
+exports.findTracks = (id,perPage, page) => {
+    return User.findById(id)
+    .slice('tracks',[perPage*page, perPage])
+    .then((result) => {
         result = result.toJSON();
         delete result._id;
         delete result.__v;
