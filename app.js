@@ -9,6 +9,7 @@ const config = require('./config/database');
 const AuthorizationRouter = require('./authorization/routes.config');
 const UsersRouter = require('./users/routes.config');
 const TracksRouter = require('./Track/routes.config');
+const CovoituragesRouter = require('./Covoiturage/routes.config');
 
 
 mongoose.connect(config.database, function (err, db) {
@@ -36,6 +37,8 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.json());
 AuthorizationRouter.routesConfig(app);
+
+CovoituragesRouter.routesConfig(app);
 UsersRouter.routesConfig(app);
 TracksRouter.routesConfig(app);
 
