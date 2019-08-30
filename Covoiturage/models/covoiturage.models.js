@@ -20,7 +20,9 @@ const covoiturageSchema = new Schema({
     totalPassengers: {
         type: Number,
         min: [2, 'Too few passengers']
-    }
+    },
+    dateTime: Date,
+    routes: String
 });
 
 
