@@ -15,6 +15,8 @@ exports.list = (req, res) => {
         if (req.query.page) {
             req.query.page = parseInt(req.query.page);
             page = Number.isInteger(req.query.page) ? req.query.page : 0;
+            page = page - 1;
+            if (page < 0) page = 0
         }
     }
     return TrafficModel.list(limit, page);

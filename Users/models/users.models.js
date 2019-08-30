@@ -52,10 +52,17 @@ exports.findById = (id) => {
 };
 
 exports.findTracks = (id,perPage, page) => {
+    console.log(perPage)
     return User.findById(id)
     .slice('tracks',[perPage*page, perPage])
     .then((result) => {
-        result = result.toJSON();
+        if(result==null) {
+            result = {
+                tracks:[]
+            }
+        } else {
+            result = result.toJSON();
+        }
         delete result._id;
         delete result.__v;
         return result;

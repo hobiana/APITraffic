@@ -12,13 +12,11 @@ exports.routesConfig = function (app) {
     app.get('/users/:userId/tracks', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
-        PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         TrackController.list
     ]);
     app.post('/users/:userId/tracks', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
-        PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
         TrackController.createTrack
     ]);
 };

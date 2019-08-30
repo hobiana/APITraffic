@@ -7,6 +7,8 @@ exports.list = (req, res) => {
         if (req.query.page) {
             req.query.page = parseInt(req.query.page);
             page = Number.isInteger(req.query.page) ? req.query.page : 0;
+            page = page - 1;
+            if (page < 0) page = 0
         }
     }
     TrackModel.getTracks(req.params.userId,limit, page).then((result) => {
