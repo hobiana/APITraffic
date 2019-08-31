@@ -39,6 +39,7 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
                         provider: 'email',
                         name: user[0].firstName + ' ' + user[0].lastName,
                     };
+                    console.log(req.body)
                     return next();
                 } else {
                     return res.status(400).send({errors: ['Invalid e-mail or password']});

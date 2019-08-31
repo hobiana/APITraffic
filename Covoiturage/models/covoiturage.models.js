@@ -1,28 +1,35 @@
 import Config from '../../config/database'
 import UserModel from '../../Users/models/users.models'
+import polyline from '@mapbox/polyline'
 const mongoose = require('mongoose');
 mongoose.connect(Config.database);
 const Schema = mongoose.Schema;
 
-const pointSchema = new Schema({
+const PlaceSchema = new Schema({
     name: String,
-    coordinates: {
-        latitude: Number,
-        longitude: Number
+    location: {
+        type: { type: String },
+        coordinates: []
     }
+});
+
+const lineStringSchema = new Schema({
+    type: String,
+    coordinates: [[Number]]
 });
 
 
 const covoiturageSchema = new Schema({
-    departure: pointSchema,
-    arrival: pointSchema,
+    clientPurpose: Schema.Types.ObjectId,
+    departure: PlaceSchema,
+    arrival: PlaceSchema,
     passengers: [Schema.Types.ObjectId],
     totalPassengers: {
         type: Number,
         min: [2, 'Too few passengers']
     },
     dateTime: Date,
-    routes: String
+    routes: lineStringSchema
 });
 
 
@@ -48,6 +55,10 @@ function getModels(schemaName, schema) {
 const Cov = getModels('Covoiturages', covoiturageSchema);
 
 exports.createCovoiturage = (CovoiturageData) => {
+    CovoiturageData.routes = {
+        type: "LineString",
+        coordinates: polyline.decode(CovoiturageData.routes)
+    }
     console.log("test", CovoiturageData)
     const Covoiturage = new Cov(CovoiturageData);
     return Covoiturage.save();
@@ -57,6 +68,7 @@ exports.findById = async (id) => {
     let passengers = [];
     let covoiturage = await Cov.findById(id);
     covoiturage = covoiturage.toJSON();
+    covoiturage.routes = polyline.encode(covoiturage.routes.coordinates)
     for (let i = 0; i < covoiturage.passengers.length; i++) {
         await UserModel.findById(covoiturage.passengers[i])
             .then((user) => {
@@ -66,6 +78,11 @@ exports.findById = async (id) => {
                 passengers.push(user);
             });
     }
+    covoiturage.clientPurpose = await UserModel.findById(covoiturage.clientPurpose)
+    delete covoiturage.clientPurpose.tracks
+    delete covoiturage.clientPurpose.password
+    delete covoiturage.clientPurpose.permissionLevel
+
     delete covoiturage._id;
     delete covoiturage.__v;
     covoiturage["passengers"] = passengers;
@@ -89,14 +106,34 @@ exports.patchCovoiturage = (id, CovoiturageData) => {
 
 exports.list = (perPage, page) => {
     return new Promise((resolve, reject) => {
-        Cov.find()
-            .limit(perPage)
-            .skip(perPage * page)
-            .exec(function (err, Covoiturages) {
+        Cov.aggregate()
+            .facet({
+                results: [
+                    { "$skip": perPage * page },
+                    { "$limit": perPage }
+                ],
+                total_pages: [
+                    { "$count": "count" }
+                ]
+            })
+            .exec(async function (err, Covoiturages) {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(Covoiturages);
+                    await Promise.all(Covoiturages[0].results.map(async (covoiturage) => {
+                        covoiturage.routes = polyline.encode(covoiturage.routes.coordinates);
+                        const user = await UserModel.findById(covoiturage.clientPurpose)
+                        delete user.password;
+                        delete user.permissionLevel;
+                        delete user.tracks;
+                        covoiturage.clientPurpose = user;
+                    }));
+                    let rep = {
+                        page: page + 1,
+                        total_pages: parseInt(Covoiturages[0].total_pages[0].count / perPage) + 1,
+                        results: Covoiturages[0].results
+                    }
+                    resolve(rep);
                 }
             })
     });
