@@ -7,6 +7,10 @@ const ADMIN = config.permissionLevels.ADMIN;
 const PAID = config.permissionLevels.PAID_USER;
 const FREE = config.permissionLevels.NORMAL_USER;
 
+function decodePolyline() {
+    
+}
+
 exports.routesConfig = function (app) {
     app.post('/locations', [
         ValidationMiddleware.validJWTNeeded,

@@ -14,12 +14,11 @@ const coordsSchema = new Schema({
     userid: Schema.Types.ObjectId,
     datetime: Date,
     speed: Number,
-    coordonnee: {
-        latitude: Number,
-        longitude: Number
+    location: {
+        type: { type: String },
+        coordinates: []
     }
 });
-
 
 coordsSchema.virtual('id').get(function () {
     return this._id.toHexString();
