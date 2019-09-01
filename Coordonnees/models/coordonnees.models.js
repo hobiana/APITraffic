@@ -52,6 +52,18 @@ exports.findById = (id) => {
     });
 };
 
+exports.findLastCoordinates = (userid) => {
+    return Coords.find({ "userid": userid })
+        .sort({ "datetime": -1 })
+        .limit(1)
+        .then((result) => {
+            console.log(result, userid)
+            delete result._id;
+            delete result.__v;
+            return result;
+        });
+};
+
 exports.findTracks = (id, perPage, page) => {
     return Coords.findById(id)
         .slice('tracks', [perPage * page, perPage])

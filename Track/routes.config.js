@@ -14,6 +14,11 @@ exports.routesConfig = function (app) {
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
         TrackController.list
     ]);
+    app.get('/users/:userId/tracks/coordinates', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        TrackController.listcoordinates
+    ]);
     app.post('/users/:userId/tracks', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
