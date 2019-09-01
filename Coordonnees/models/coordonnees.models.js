@@ -3,20 +3,13 @@ const mongoose = require('mongoose');
 mongoose.connect(Config.database);
 const Schema = mongoose.Schema;
 
-// const coords = new Schema({
-//     coordinates: {
-//         latitude: Number,
-//         longitude: Number
-//     }
-// });
-
 const coordsSchema = new Schema({
     userid: Schema.Types.ObjectId,
     datetime: Date,
     speed: Number,
-    coordonnee: {
-        latitude: Number,
-        longitude: Number
+    location: {
+        type: { type: String },
+        coordinates: []
     }
 });
 
