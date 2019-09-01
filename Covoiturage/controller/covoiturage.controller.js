@@ -7,6 +7,12 @@ exports.insert = (req, res) => {
         });
 };
 
+exports.validate = (req, res) => {
+    CovoiturageModel.validate(req.params.covId, req.body.passengerId)
+        .then((result) => {
+            res.status(201).send({ id: result._id });
+        });
+};
 
 exports.getById = (req, res) => {
     CovoiturageModel.findById(req.params.covoiturageId).then((result) => {

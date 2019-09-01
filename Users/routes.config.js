@@ -21,6 +21,11 @@ exports.routesConfig = function (app) {
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
         UsersController.getById
     ]);
+    app.patch('/users/:userId/tracks', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        UsersController.addPersonToTrack
+    ]);
     app.patch('/users/:userId', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),

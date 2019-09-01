@@ -37,6 +37,12 @@ exports.createUser = (userData) => {
     return user.save();
 };
 
+exports.addPersonToTrack = (userId, personToTrackId) => {
+    return User.update(
+        { _id: userId },
+        { $push: { tracks: personToTrackId } }
+    );
+};
 
 exports.findByEmail = (email) => {
     return User.find({ email: email });
@@ -51,22 +57,22 @@ exports.findById = (id) => {
     });
 };
 
-exports.findTracks = (id,perPage, page) => {
+exports.findTracks = (id, perPage, page) => {
     console.log(perPage)
     return User.findById(id)
-    .slice('tracks',[perPage*page, perPage])
-    .then((result) => {
-        if(result==null) {
-            result = {
-                tracks:[]
+        .slice('tracks', [perPage * page, perPage])
+        .then((result) => {
+            if (result == null) {
+                result = {
+                    tracks: []
+                }
+            } else {
+                result = result.toJSON();
             }
-        } else {
-            result = result.toJSON();
-        }
-        delete result._id;
-        delete result.__v;
-        return result;
-    });
+            delete result._id;
+            delete result.__v;
+            return result;
+        });
 };
 
 exports.patchUser = (id, userData) => {

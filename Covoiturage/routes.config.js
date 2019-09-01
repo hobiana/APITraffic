@@ -8,6 +8,11 @@ const PAID = config.permissionLevels.PAID_USER;
 const FREE = config.permissionLevels.NORMAL_USER;
 
 exports.routesConfig = function (app) {
+    app.patch('/covoiturages/:covId/validate', [
+        ValidationMiddleware.validJWTNeeded,
+        PermissionMiddleware.minimumPermissionLevelRequired(FREE),
+        CovoiturageController.validate
+    ]);
     app.post('/covoiturages', [
         ValidationMiddleware.validJWTNeeded,
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
@@ -23,15 +28,4 @@ exports.routesConfig = function (app) {
         PermissionMiddleware.minimumPermissionLevelRequired(FREE),
         CovoiturageController.getById
     ]);
-    // app.patch('/users/:userId', [
-    //     ValidationMiddleware.validJWTNeeded,
-    //     PermissionMiddleware.minimumPermissionLevelRequired(FREE),
-    //     PermissionMiddleware.onlySameUserOrAdminCanDoThisAction,
-    //     CovoiturageController.patchById
-    // ]);
-    // app.delete('/users/:userId', [
-    //     ValidationMiddleware.validJWTNeeded,
-    //     PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
-    //     CovoiturageController.removeById
-    // ]);
 };

@@ -64,6 +64,13 @@ exports.createCovoiturage = (CovoiturageData) => {
     return Covoiturage.save();
 };
 
+exports.validate = (covId, userId) => {
+    return Cov.update(
+        { _id: covId },
+        { $push: { passengers: userId } }
+    );
+};
+
 exports.findById = async (id) => {
     let passengers = [];
     let covoiturage = await Cov.findById(id);

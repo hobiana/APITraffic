@@ -14,6 +14,13 @@ exports.insert = (req, res) => {
         });
 };
 
+exports.addPersonToTrack = (req, res) => {
+    UserModel.addPersonToTrack(req.params.userId, req.body.id)
+        .then((result) => {
+            res.status(201).send({ id: result._id });
+        });
+};
+
 
 exports.getById = (req, res) => {
     UserModel.findById(req.params.userId).then((result) => {
