@@ -135,12 +135,22 @@ exports.list = (perPage, page) => {
                         delete user.tracks;
                         covoiturage.clientPurpose = user;
                     }));
-                    let rep = {
-                        page: page + 1,
-                        total_pages: parseInt(Covoiturages[0].total_pages[0].count / perPage) + 1,
-                        results: Covoiturages[0].results
+                    try {
+                        let rep = {
+                            page: page + 1,
+                            total_pages: parseInt(Covoiturages[0].total_pages[0].count / perPage) + 1,
+                            results: Covoiturages[0].results
+                        }
+                        resolve(rep);
                     }
-                    resolve(rep);
+                    catch (err) {
+                        let rep = {
+                            page: page + 1,
+                            total_pages: 1,
+                            results: []
+                        }
+                        resolve(rep);
+                    }
                 }
             })
     });
