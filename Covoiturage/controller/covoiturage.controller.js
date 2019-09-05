@@ -42,7 +42,7 @@ exports.list = (req, res) => {
             if (page < 0) page = 0
         }
     }
-    CovoiturageModel.list(limit, page).then((result) => {
+    CovoiturageModel.list(limit, page, req.query.origin, req.query.destination, req.query.datedebut, req.query.datefin, req.query.timedebut, req.query.timefin).then((result) => {
         res.status(200).send(result);
     })
 };

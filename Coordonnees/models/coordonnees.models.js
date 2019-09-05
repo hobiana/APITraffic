@@ -63,6 +63,24 @@ exports.findLastCoordinates = (userid) => {
             return result;
         });
 };
+//db.getCollection('locations').createIndex({location:"2dsphere"});
+exports.findNear = (point) => {
+    return Coords.find({
+        "location": {
+            $near : {
+                $maxDistance: 1000,
+                $geometry: {
+                    type: "Point" ,
+                    coordinates: point
+                 },
+            }
+        }
+        })
+        .then((result) => {
+            console.log("findNear",result)
+            return result;
+        });
+};
 
 exports.findTracks = (id, perPage, page) => {
     return Coords.findById(id)

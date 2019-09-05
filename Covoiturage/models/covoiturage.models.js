@@ -1,6 +1,7 @@
 import Config from '../../config/database'
 import UserModel from '../../Users/models/users.models'
 import polyline from '@mapbox/polyline'
+import moment from 'moment';
 const mongoose = require('mongoose');
 mongoose.connect(Config.database);
 const Schema = mongoose.Schema;
@@ -111,9 +112,36 @@ exports.patchCovoiturage = (id, CovoiturageData) => {
     })
 };
 
-exports.list = (perPage, page) => {
+exports.list = (perPage, page, origin, destination, datedebut, datefin, timedebut, timefin) => {
+    let tofind = {};
+
+    let deb = null;
+    if (datedebut != null && timedebut != null) {
+        deb = new Date(datedebut + " " + timedebut);
+    }
+    let fin = null;
+    if (datefin != null && timefin != null) {
+        fin =  new Date(datefin + " " + timefin);
+    }
+
+    if (deb != null && fin != null) {
+        tofind["dateTime"] = {
+            $gt: deb,
+            $lt: fin
+        }
+    }
+
+
+    if (origin != null) tofind["departure.name"] = new RegExp( origin,'i' );
+    if (destination != null) tofind["arrival.name"] = new RegExp( destination,'i' );
+
+    console.log("tofind", tofind)
     return new Promise((resolve, reject) => {
-        Cov.aggregate()
+        Cov.aggregate([
+            {
+                $match: tofind
+            }
+        ])
             .facet({
                 results: [
                     { "$skip": perPage * page },

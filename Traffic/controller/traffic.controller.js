@@ -8,7 +8,7 @@ exports.getById = (req, res) => {
     });
 };
 
-exports.list = (req, res) => {
+exports.list = async (req, res) => {
     let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
     let page = 0;
     if (req.query) {
@@ -19,5 +19,6 @@ exports.list = (req, res) => {
             if (page < 0) page = 0
         }
     }
-    return TrafficModel.list(limit, page);
+    let rep = await TrafficModel.analyse_traffic(req.query.origin, req.query.destination, req.query.test);
+    return res.status(200).send(rep);
 };
