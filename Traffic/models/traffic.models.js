@@ -1,6 +1,6 @@
-import axios from 'axios';
-import polyline from '@mapbox/polyline';
-import CoordonneeModel from '../../Coordonnees/models/coordonnees.models'
+const axios =require( 'axios');
+const polyline =require( '@mapbox/polyline');
+const CoordonneeModel =require( '../../Coordonnees/models/coordonnees.models');
 
 let ApiKey = 'AIzaSyBBhowPi5DO3oPSczGEQm1ZTdU6yFLbv0E';
 
@@ -33,10 +33,14 @@ exports.list = (perPage, page) => {
 //     async CoordonneeModel.findNear(point)
 // }
 
+const taux = [
+    [26.66,69.37,39.58]
+]
+
+
 exports.analyse_traffic = async (origin, destination, test) => {
     let response = [];
     if (origin != '' && destination != '') {
-        let taux = 0;
         let googleMapRoutes = await getDirections(origin, destination);
         // console.log("googleMapRoutes",googleMapRoutes)
         let routes = googleMapRoutes.data.routes;
@@ -45,7 +49,7 @@ exports.analyse_traffic = async (origin, destination, test) => {
             console.log(i)
             let rep = {
                 distance: Math.round(route.legs[0].distance.value / 1000),
-                pourcentage: 10,
+                pourcentage: taux[0][i],
                 routes: route.overview_polyline.points
             }
             response.push(rep)
