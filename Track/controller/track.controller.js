@@ -27,6 +27,7 @@ exports.list = (req, res) => {
             if (page < 0) page = 0
         }
     }
+    console.log(req.query.origin)
     TrackModel.getTracksCoordinates(req.params.userId,limit, page).then((result) => {
         res.status(200).send(result);
     })

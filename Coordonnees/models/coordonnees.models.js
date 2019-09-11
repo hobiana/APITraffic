@@ -57,7 +57,7 @@ exports.findLastCoordinates = (userid) => {
         .sort({ "datetime": -1 })
         .limit(1)
         .then((result) => {
-            console.log(result, userid)
+            // console.log("andraaaaaa", result)
             delete result._id;
             delete result.__v;
             return result;

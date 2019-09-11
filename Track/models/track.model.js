@@ -21,6 +21,7 @@ exports.getTracks = async (userId, perPage, page) => {
 };
 
 exports.getTracksCoordinates = async (userId, perPage, page) => {
+    console.log("********************** getTracksCoordinates  **************")
     let tracks = [];
     let newTrack = await UserModel.findTracks(userId,perPage, page);
     for (let i = 0; i < newTrack.tracks.length; i++) {
@@ -31,7 +32,7 @@ exports.getTracksCoordinates = async (userId, perPage, page) => {
                 delete user.tracks;
                 // console.log("User", user)
                 tracks.push(user);
-                console.log("dans boucle", tracks)
+                // console.log("dans boucle", tracks)
             });
     }
     for (let i = 0; i < tracks.length; i++) {
@@ -40,7 +41,7 @@ exports.getTracksCoordinates = async (userId, perPage, page) => {
                 tracks[i].position = coordinates
             });
     }
-    // console.log("Farany", tracks);
+    //  console.log("Farany", tracks);
     return tracks;
 };
 
